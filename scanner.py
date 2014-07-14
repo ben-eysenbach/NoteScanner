@@ -13,7 +13,7 @@ def threshold(img):
 
     TODO:
     * only find mask0
-    * try multiply k values
+    * try multiple k values
 
     '''
 
@@ -25,16 +25,6 @@ def threshold(img):
     labels = k_means.labels_
     mask0 = (labels == 0).reshape((width, height))
     mask1 = (labels == 1).reshape((width, height))
-    # mask2 = (labels == 2).reshape((width, height))
-    # plt.imshow(mask0)
-    # plt.show()
-    #
-    # plt.imshow(mask1)
-    # plt.show()
-    #
-    # plt.imshow(mask2)
-    # plt.show()
-    # sorted_masks = sorted([mask0, mask1, mask2], key=np.sum, reverse=True)
     sorted_masks = sorted([mask0, mask1], key=np.sum, reverse=True)
     notes_mask = sorted_masks[0]
     # background_mask = sorted_masks[1]
@@ -137,7 +127,7 @@ def get_image(filename):
     return cv2.imread(filename)[::10,::10,:].astype('uint8')
 
 if __name__ == '__main__':
-    img = get_image('rmb1.jpg') #[:300, :300, :]
+    img = get_image('rmb1.jpg')
     img = uniform_filter(img, size=10)
     gray = threshold(img)
     corners = get_corners(img)
