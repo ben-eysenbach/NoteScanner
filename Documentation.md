@@ -116,7 +116,7 @@ The second explanation is more "mathy." Note that the point mapping function is 
 
 Now that we can perform each of these image operations separately, we can combine them by multiplying matrices. For example, let $$$ S $$$ be the scale matrix, $$$ T $$$ be the translation matrix, $$$ R $$$ be the rotation matrix, and $$$ x$$$ be our point. If we want to rotation our image, enlarge it, and then translate it, we can do the following multiplication: $$$( T \cdot (S \cdot (R \cdot x))) $$$. Note that the order in which we apply each operation does matter; enlarging the image and then translating is different from translating and then scaling. However, matrix multiplication is associative, so the above product can be rewritten as $$$ (T \cdot S \cdot R) \cdot x $$$. From this, it is clear that our transformation matrix can be written as a single matrix $$$ M = T \cdot S \cdot R $$$.
 
-With the 3 operations defined above, we apply many transformation. However, all combinations of these transformations, if applied to a polygon, will result in a [similar](http://en.wikipedia.org/wiki/Similarity_(geometry)) polygon. This is bad news for us, because there are many cases where the notes in the picture do not appear similar to the real shape of the notes (i.e. they may not be a rectangle).
+With the 3 operations defined above, we can apply many transformations. However, all combinations of these transformations, if applied to a polygon, will result in a [similar](http://en.wikipedia.org/wiki/Similarity_(geometry)) polygon. This is bad news for us, because there are many cases where the notes in the picture do not appear similar to the real shape of the notes (i.e. they may not be a rectangle). We could also consider matrices for reflection, sheering, and squeezing to allow for all affine transformations, but that still wouldn't be enough. Affine transformations require that parallel lines remain parallel, which is nearly not the case in some of the examples here.
 
 ------------
 
@@ -191,4 +191,3 @@ Source: [https://github.com/ben-eysenbach/NoteScanner](https://github.com/ben-ey
 
 
 Ben Eysenbach, [eysenbachbe@gmail.com](mailto:eysenbachbe@gmail.com), 2014.
-
