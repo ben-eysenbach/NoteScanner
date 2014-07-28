@@ -35,13 +35,13 @@ Now that we have our grey-scale image (it's actually binary (black and white)), 
 
 ###Step 3: Transform Image
 
-This step will "drag" the corners found in step 2 such that the notes will the entire image. Specifically, we don't have a [book scanner](http://www.wired.com/2009/12/diy-book-scanner/), so our image will have some element of perspective in it (i.e. it will not look like a rectangle). The process is known as taking a [Perspective Transform](http://en.wikipedia.org/wiki/3D_projection#Perspective_projection). This process works by taking the corners found in step 2, and finding a function that maps them to the corners of the image. This function is encoded in a 3 x 3 matrix ( $$$ M $$$ ) such that multiplying my a point (given in [homogeneous coordinates](http://en.wikipedia.org/wiki/Homogeneous_coordinates), $$$ \<x, y, 1\> $$$ ) will give the corresponding corner of the image.
+This step will "drag" the corners found in step 2 such that the notes will the entire image. Specifically, we don't have a [book scanner](http://www.wired.com/2009/12/diy-book-scanner/), so our image will have some element of perspective in it (i.e. it will not look like a rectangle). The process is known as taking a [Perspective Transform](http://en.wikipedia.org/wiki/3D_projection#Perspective_projection). This process works by taking the corners found in step 2, and finding a function that maps them to the corners of the image. This function is encoded in a 3 x 3 matrix ( $ M $ ) such that multiplying my a point (given in [homogeneous coordinates](http://en.wikipedia.org/wiki/Homogeneous_coordinates), $ \<x, y, 1\> $ ) will give the corresponding corner of the image.
 
 ========
 
 #####Identity
 
-For example, if our notes occupy the entire image, we would want to map each point on the image to itself. This could be encoded as the identity function ( $$$ f(x) = x $$$ ) or as the identity matrix:
+For example, if our notes occupy the entire image, we would want to map each point on the image to itself. This could be encoded as the identity function ( $ f(x) = x $ ) or as the identity matrix:
 
 $$ \begin{pmatrix}
 1&0&0\\\
@@ -53,7 +53,7 @@ $$ \begin{pmatrix}
 
 #####Scale
 
-Now imagine that we take a 200 x 200 image of our notes, and the notes occupy exactly the upper-left 100x100 section of the image. In this case, the perspective transform is simply enlarging the original image by a factor of two along both axes (and then cropping). This would be achieved by the function $$$ f(x,y) = (2x, 2y) $$$ or the matrix:
+Now imagine that we take a 200 x 200 image of our notes, and the notes occupy exactly the upper-left 100x100 section of the image. In this case, the perspective transform is simply enlarging the original image by a factor of two along both axes (and then cropping). This would be achieved by the function $ f(x,y) = (2x, 2y) $ or the matrix:
 $$
 \begin{pmatrix}
 2&0&0\\\
@@ -62,7 +62,7 @@ $$
 \end{pmatrix}
 $$.
 
-Generally, to scale an image by $$$ s\_x $$$ in the x direction and $$$ s\_y $$$ in the y direction, map the points on the original image using the matrix:
+Generally, to scale an image by $ s\_x $ in the x direction and $ s\_y $ in the y direction, map the points on the original image using the matrix:
 $$
 \begin{pmatrix}
 s\_x&0&0\\\
@@ -75,7 +75,7 @@ $$.
 
 #####Rotation
 
-To encode rotation, consider what happens to each [unit vector](http://en.wikipedia.org/wiki/Unit_vector#Cartesian_coordinates) in Cartesian Coordinates when rotated clockwise by a angle $$$ \theta $$$. The $$$ \hat i $$$ vector ( $$$ <1,0> $$$ ) becomes $$$ <\cos(\theta), \sin(\theta)> $$$ and the $$$ \hat j $$$ vector ( $$$ <0,1> $$$ ) becomes $$$ <-\sin(\theta), \cos(\theta)> $$$. Putting this together, we get the 2 x 2 rotation matrix:
+To encode rotation, consider what happens to each [unit vector](http://en.wikipedia.org/wiki/Unit_vector#Cartesian_coordinates) in Cartesian Coordinates when rotated clockwise by a angle $ \theta $. The $ \hat i $ vector ( $ <1,0> $ ) becomes $ <\cos(\theta), \sin(\theta)> $ and the $ \hat j $ vector ( $ <0,1> $ ) becomes $ <-\sin(\theta), \cos(\theta)> $. Putting this together, we get the 2 x 2 rotation matrix:
 
 $$
 \begin{pmatrix}
@@ -114,7 +114,7 @@ The second explanation is more "mathy." Note that the point mapping function is 
 
 #####Combination
 
-Now that we can perform each of these image operations separately, we can combine them by multiplying matrices. For example, let $$$ S $$$ be the scale matrix, $$$ T $$$ be the translation matrix, $$$ R $$$ be the rotation matrix, and $$$ x$$$ be our point. If we want to rotation our image, enlarge it, and then translate it, we can do the following multiplication: $$$( T \cdot (S \cdot (R \cdot x))) $$$. Note that the order in which we apply each operation does matter; enlarging the image and then translating is different from translating and then scaling. However, matrix multiplication is associative, so the above product can be rewritten as $$$ (T \cdot S \cdot R) \cdot x $$$. From this, it is clear that our transformation matrix can be written as a single matrix $$$ M = T \cdot S \cdot R $$$.
+Now that we can perform each of these image operations separately, we can combine them by multiplying matrices. For example, let $ S $ be the scale matrix, $ T $ be the translation matrix, $ R $ be the rotation matrix, and $ x$ be our point. If we want to rotation our image, enlarge it, and then translate it, we can do the following multiplication: $( T \cdot (S \cdot (R \cdot x))) $. Note that the order in which we apply each operation does matter; enlarging the image and then translating is different from translating and then scaling. However, matrix multiplication is associative, so the above product can be rewritten as $ (T \cdot S \cdot R) \cdot x $. From this, it is clear that our transformation matrix can be written as a single matrix $ M = T \cdot S \cdot R $.
 
 With the 3 operations defined above, we can apply many transformations. However, all combinations of these transformations, if applied to a polygon, will result in a [similar](http://en.wikipedia.org/wiki/Similarity_(geometry)) polygon. This is bad news for us, because there are many cases where the notes in the picture do not appear similar to the real shape of the notes (i.e. they may not be a rectangle). We could also consider matrices for reflection, sheering, and squeezing to allow for all affine transformations, but that still wouldn't be enough. Affine transformations require that parallel lines remain parallel, which is nearly not the case in some of the examples here.
 
@@ -122,18 +122,18 @@ With the 3 operations defined above, we can apply many transformations. However,
 
 #####Linear Algebra
 
-We can overcome this by solving for the transformation matrix directly instead of trying to compose it from individual matrix operations. Specifically, let's make a matrix of corners found in step 2 and solve for the matrix which maps them to the corners of the image (with height  h  and width  w  ).
+We can overcome this by solving for the transformation matrix directly instead of trying to compose it from individual matrix operations. Specifically, let's make a matrix of corners found in step 2 and solve for the matrix which maps them to the corners of the image (with height  $h$  and width  $w$ ).
 
-å
+
 $$
 X =
 \begin{pmatrix}
-x_{ul}&x\_{ur}&x\_{ll}&x\_{lr}\\\
+x\_{ul}&x\_{ur}&x\_{ll}&x\_{lr}\\\
 y\_{ul}&y\_{ur}&y\_{ll}&y\_{lr}\\\
 \end{pmatrix}
 $$
 
-We want to solve for the transformation matrix $$$ M $$$ in the following equation:
+We want to solve for the transformation matrix $ M $ in the following equation:
 
 $$
 M \cdot X =
@@ -144,7 +144,7 @@ M \cdot X =
 = B
 $$
 
-The first column of $$$B$$$ is the zero vector and $$$B$$$ is not square, so we cannot find its inverse. Rather, we must use [least squares]("http://en.wikipedia.org/wiki/Linear_least_squares_(mathematics)#Computation"):
+The first column of $B$ is the zero vector and $B$ is not square, so we cannot find its inverse. Rather, we must use [least squares]("http://en.wikipedia.org/wiki/Linear_least_squares_(mathematics)#Computation"):
 
 $$ M \cdot X = B $$
 
@@ -162,11 +162,11 @@ By extension, if 3 corners on the original image are nearly collinear, they like
 
 Now that we know exactly where each point on the new image corresponds to on the old image, we still face the problem that the exact point on the old image may not be an integer. One way to resolve this is to simply choose the closest point. This method is called [Nearest-Neighbor Interpolation](http://en.wikipedia.org/wiki/Nearest-neighbor_interpolation) and gives decent results. Another approach is to take a linear combination of the 4 closest pixels. This method, called [Bilinear Interpolation](http://en.wikipedia.org/wiki/Bilinear_interpolation) gives better results which appear less pixelated, but is slower (for every pixel on the new image, you must consider 4 points on the original instead of a single point for Nearest-Neighbor Interpolation).
 
-Specifically, let the nearest pixels be $$$ul$$$ (upper left), $$$ur$$$ (upper right), $$$ll$$$ (lower left), and $$$lr$$$ (lower right). Additionally, let $$$dist\_{left}$$$ be the distance along the x axis from the exact point to $$$ul$$$ or $$$ur$$$, and let $$$dist\_{top}$$$ be the distance along the y axis from $$$ul$$$ or $$$ur$$$. Both of these distances are between 0 and 1. The pixel value for the exact point should become more dependent on a neighbor when it gets closer to that neighbor. In one dimension, when neighbors $$$l$$$ and $$$r$$$, the pixel value should be $$$(1-dist\_{left} * l) + dist\_{left} * right$$$. Extending to 2 dimensions, the exact pixel value should be:
+Specifically, let the nearest pixels be $ul$ (upper left), $ur$ (upper right), $ll$ (lower left), and $lr$ (lower right). Additionally, let $dist\_{left}$ be the distance along the x axis from the exact point to $ul$ or $ur$, and let $dist\_{top}$ be the distance along the y axis from $ul$ or $ur$. Both of these distances are between 0 and 1. The pixel value for the exact point should become more dependent on a neighbor when it gets closer to that neighbor. In one dimension, when neighbors $l$ and $r$, the pixel value should be $(1-dist\_{left} * l) + dist\_{left} * right$. Extending to 2 dimensions, the exact pixel value should be:
 
 $$
 (1-dist\_{left}) * (1-dist\_{top}) * ul + \\\
-(1-dist_{left}) * (dist\_{top}) * ll + \\\
+(1-dist\_{left}) * (dist\_{top}) * ll + \\\
 (dist\_{left}) * (1 - dist\_{top}) * ur + \\\
 (dist\_{left}) * (dist\_{top}) * lr
 $$
