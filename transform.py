@@ -25,16 +25,11 @@ def transform(img, matrix, height=300, width=300):
     assert type(matrix) == np.matrix
     assert np.linalg.det(matrix) != 0
     inv_matrix = matrix.I
-    # print 'Inv:', inv_matrix
     new_img = np.empty((height, width, 3), dtype='uint8')
-    # for i, row in enumerate(new_img):
-    #     for j, cell in enumerate(row):
     for r in range(height):
         for c in range(width):
             pt = [c, r]
-            # cell = get_pt(pt, img, inv_matrix)
             new_img[r, c] = get_pt(pt, img, inv_matrix)
-            # new_img[r, c] = img[r, c]
     return new_img
 
 def get_pt(pt, img, inv_matrix):
@@ -102,13 +97,15 @@ def get_perspective_matrix(ul, ur, ll, lr, height=300, width=300):
 
 if __name__ == '__main__':
     # img = np.asarray(Image.open('flag.jpg'))[::5, ::5, :]
-    img = Image.open('rmb1_small.jpg')
+    img = Image.open('notes_small.jpg')
+    # sys.exit()
     base_image = BaseImage(img)
     corners = base_image.corners
+    print 'Corners:', corners
     matrix = get_perspective_matrix(*corners)
     # print matrix
     # matrix = 2 * np.matrix(np.identity(3))
     # print get_perspective_matrix([0,0], [200,0], [100,100], [300,100])
-    new_img = transform(np.asarray(img), matrix)
+    new_img = transform(np.asarray(img), matrix, height=100, width=100)
     plt.imshow(new_img)
     plt.show()

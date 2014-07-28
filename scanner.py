@@ -14,6 +14,7 @@ def threshold(img):
     TODO:
     * only find mask0
     * try multiple k values
+    * compare with Otsu's Method of binarization. (Implemented in my QR project)
 
     '''
 

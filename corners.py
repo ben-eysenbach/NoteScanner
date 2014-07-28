@@ -4,7 +4,12 @@ import Tkinter
 
 class BaseImage:
 
+    '''Implements a UI which allows the user to select the corners of the
+    given image'''
+
     def __init__(self, img):
+        '''img must be a PIL image'''
+
         self.corners = []
         self.root = Tkinter.Tk()
         width, height = img.size
@@ -17,8 +22,8 @@ class BaseImage:
         self.root.mainloop()
 
     def on_click(self, event):
-        print 'Click:', event.x, event.y
-        if len(self.corners) < 4:
+        # print 'Click:', event.x, event.y
+        if len(self.corners) <= 4:
             self.canvas.create_oval(event.x-5, event.y-5, event.x+5, event.y+5, outline="red",
                 fill="green", width=2)
             self.corners.append((event.x, event.y))
